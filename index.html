@@ -174,3 +174,4 @@
             <section id="dashboard-section" class="section-card">
                 <h2>Customer List</h2>
                 <input type="text" id="cust-search" placeholder="Search by Name or Phone..." onkeyup="app.renderCustomers()" style="padding: 10px; width: 100%; max-width: 
+<script> const app = { showSection: function(sectionId) { document.querySelectorAll('section').forEach(section => { section.style.display = section.id === sectionId ? 'block' : 'none'; }); } }; </script>
