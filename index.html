@@ -245,14 +245,94 @@
 </div>
 
 <script>
-const app = {
+const appLogic = {
+  customers: [
+    { id: 'C001', name: 'Rahim Ahmed', phone: '01700000000', package: '20 Mbps', status: 'Active' },
+    { id: 'C002', name: 'Karim Uddin', phone: '01800000000', package: '50 Mbps', status: 'Expired' }
+  ],
+  
   showSection: function(sectionId) {
     document.querySelectorAll('section').forEach(section => {
+      section.classList.remove('hidden');
       section.style.display = section.id === sectionId ? 'block' : 'none';
     });
+  },
+
+  renderCustomers: function() {
+    const searchTerm = document.getElementById('custom-search')?.value.toLowerCase() || '';
+    const tbody = document.getElementById('customer-table-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    const filtered = this.customers.filter(c => 
+      c.name.toLowerCase().includes(searchTerm) || c.phone.includes(searchTerm)
+    );
+
+    filtered.forEach(c => {
+      const row = `<tr>
+        <td>${c.id}</td>
+        <td>${c.name}</td>
+        <td>${c.phone}</td>
+        <td>${c.package}</td>
+        <td><span class="status-badge status-${c.status.toLowerCase()}">${c.status}</span></td>
+        <td>
+          <button class="action-btn btn-recharge" onclick="app.showSection('recharge-section')">Recharge</button>
+        </td>
+      </tr>`;
+      tbody.innerHTML += row;
+    });
+
+    const select = document.getElementById('r-phone2');
+    if (select) {
+      select.innerHTML = '';
+      this.customers.forEach(c => {
+        select.innerHTML += `<option value="${c.phone}">${c.name} (${c.phone})</option>`;
+      });
+    }
+  },
+
+  addCustomer: function(event) {
+    event.preventDefault();
+    const name = document.getElementById('c-name').value;
+    const phone = document.getElementById('c-phone').value;
+    const pkg = document.getElementById('c-package').value;
+
+    const newCust = {
+      id: 'C00' + (this.customers.length + 1),
+      name: name,
+      phone: phone,
+      package: pkg,
+      status: 'Active'
+    };
+
+    this.customers.push(newCust);
+    alert('Customer added successfully!');
+    event.target.reset();
+    this.showSection('dashboard-section');
+    this.renderCustomers();
+  },
+
+  rechargeAccount: function(event) {
+    event.preventDefault();
+    const phone = document.getElementById('r-phone2').value;
+    const amount = document.getElementById('r-amount').value;
+    
+    const customer = this.customers.find(c => c.phone === phone);
+    if (customer) {
+      customer.status = 'Active';
+      alert(`Recharge of ${amount} Tk successful for {
+      event.target.reset();
+      this.showSection('dashboard-section');
+      this.renderCustomers();
+    }
   }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.app = appLogic;
+  appLogic.renderCustomers();
+});
 </script>
 
 </body>
-</html>t>
+</html>
